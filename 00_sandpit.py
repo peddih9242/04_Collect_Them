@@ -1,10 +1,5 @@
-choose_from = []
+word = input("Word? ")
 
-word = input("word? ")
+letters = list(word)
 
-for item in word:
-    choose_from.append(item)
-
-letters_needed = choose_from
-
-chosen = input("Choose: ")
+print(letters)

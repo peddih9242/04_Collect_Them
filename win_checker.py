@@ -1,29 +1,23 @@
-import random
+# list to store each letter from given word
+choose_from = []
 
-a = 0
-c = 0
-o = 0
-f = 0
-e = 0
-print("Running....")
-coffee = False
-while not coffee:
-    chosen = random.randint(1, 5)
-    
-    if chosen == 1:
-        letter = "a"
-        a += 1
-    elif chosen == 2:
-        letter = "c"
-        c += 1
-    elif chosen == 3:
-        letter = "o"
-        o += 1
-    elif chosen == 4:
-        letter = "f"
-        f += 1
-    elif chosen == 5:
-        letter = "e"
-        e += 1
+# take in given word
+word = input("word? ")
 
-print("You get coffee!")
+# append each letter from the word to the list
+for item in word:
+    choose_from.append(item)
+
+# make another list to have one to choose from and one to remove letters from
+letters_needed = choose_from
+
+while choose_from != []:
+    chosen = input("Chosen: ") # change to be randomized in base component
+
+    # remove letters from list
+    if chosen in choose_from:
+        letters_needed.remove(chosen)
+        print(choose_from)
+    else:
+        # show that you got a duplicate
+        print("Duplicate!")

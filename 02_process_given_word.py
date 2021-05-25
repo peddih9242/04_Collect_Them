@@ -1,8 +1,8 @@
-import random
+# take in given word
+word = input("word: ")
 
-# main routine
-list = ["a", "b", "c", "d"]
-chosen = random.choice(list)
+# get length from word
+length = len(word)
 
-if chosen in list:
-    
+# show how long the word is
+print(length)
