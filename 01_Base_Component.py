@@ -1,7 +1,3 @@
-# next: make an option to skip through to see how many tries
-# it takes on average, or play the game and do each choice
-# individually
-
 import random
 
 # Functions
@@ -34,20 +30,26 @@ def string_check(question, valid_list, error):
         else:
             print(error)
 
-# number checker
-def num_check(question, low, high):
+# number checker, optionally checks if input
+# is between higher and lower boundaries
+def num_check(type, question, low=None, high=None):
     valid = False
     while not valid:
         try:
             # ask question
-            response = int(input(question))
-            # if response is okay, return response
-            if low <= response <= high:
+            response = type(input(question))
+            # if question does not need a higher and lower 
+            # boundary, return response
+            if low is None and high is None:
                 return response
-            # print error statements for invalid responses
             else:
-                print("Please enter a number between {} and {}.".format(low + 1, high))
-        
+            # if response is okay, return response
+                if low <= response <= high:
+                    return response
+                # print error statements for invalid responses
+                else:
+                    print("Please enter a number between {} and {}.".format(low + 1, high))
+            
         except ValueError:
             print("Please enter an integer.")
 
@@ -73,8 +75,9 @@ if show_instr == "no" or show_instr == "n":
 keep_going = ""
 while keep_going == "":
 
-    # list to store each letter from given word
+    # list to store each letter from given word and setup game summary
     choose_from = []
+    game_summary = []
 
     # take in given word and check that it is not <blank>
     word_valid = False
@@ -84,28 +87,30 @@ while keep_going == "":
             word_valid = True
         else:
             print("Please enter a word.")
-    price = num_check("Price (or enter 0 for none): ", 0, 20)
+    price = num_check(float("Price (or enter 0 for none): "), 0, 20)
+    rounds = num_check(int("How many times do you want to win? "))
 
     # append each letter from the word to the list
-    for item in word:
-        choose_from.append(item)
+    choose_from = list(word)
+    letters_needed = list(word)
 
     # make another list to have one to choose from and one to remove letters from
-    letters_needed = choose_from
     tries = 0
-    while choose_from != []:
-        chosen = input("Chosen: ") # change to be randomized in base component
-        tries += 1
+    rounds_played = 0
+    while rounds_played != rounds + 1:
+        rounds += 1
+        while letters_needed != []:
 
-        # remove letters from list
-        if chosen in choose_from:
-            letters_needed.remove(chosen)
-        else:
-            # show that you got a duplicate
-            print("Duplicate!")
-    statement_gen("Game Summary", "!")
-    print("You won, taking {} tries!".format(tries))
-    if price != 0:
-        price_total = price * tries
-        print("The total money spent was ${:.2f}".format(price_total))
-    keep_going = input("Press <enter> to keep going or any key to quit: ")
+            # generate random letter from word
+            chosen = random.choice(choose_from)
+            tries += 1
+
+            # remove chosen letter from list
+            if chosen in letters_needed:
+                letters_needed.remove(chosen)
+        statement_gen("Game Summary", "!")
+        print("You won, taking {} tries!".format(tries))
+        if price != 0:
+            price_total = price * tries
+            print("The total money spent was ${:.2f}".format(price_total))
+        keep_going = input("Press <enter> to keep going or any key to quit: ")
