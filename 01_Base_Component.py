@@ -67,7 +67,7 @@ def instructions():
 yes_no = ["yes", "no"]
 
 # ask if user has played to decide to print instructions
-show_instr = string_check("Have you played this game before (y/n)? ", yes_no, "Please enter yes/no (or y/n)")
+show_instr = string_check("Have you played this game before (y/n)? ", yes_no, "Please enter yes / no (or y / n)")
 if show_instr == "no" or show_instr == "n":
     instructions()
 
@@ -77,7 +77,6 @@ while keep_going == "":
 
     # list to store each letter from given word and setup game summary
     choose_from = []
-    game_summary = []
 
     # take in given word and check that it is not <blank>
     word_valid = False
@@ -87,20 +86,24 @@ while keep_going == "":
             word_valid = True
         else:
             print("Please enter a word.")
-    price = num_check(float("Price (or enter 0 for none): "), 0, 20)
-    rounds = num_check(int("How many times do you want to win? "))
-
+    price = num_check(float, "Price (or enter 0 for none): ", 0, 20)
+    rounds = num_check(int, "How many times do you want to win? ")
+    
     # append each letter from the word to the list
     choose_from = list(word)
-    letters_needed = list(word)
+    game_summary = []
 
     # make another list to have one to choose from and one to remove letters from
-    tries = 0
     rounds_played = 0
-    while rounds_played != rounds + 1:
-        rounds += 1
-        while letters_needed != []:
-
+    tries_total = 0
+    while rounds_played != rounds:
+      
+        rounds_played += 1
+        letters_needed = list(word)
+        tries = 0
+        game_start = False
+        while not game_start:
+            
             # generate random letter from word
             chosen = random.choice(choose_from)
             tries += 1
@@ -108,9 +111,22 @@ while keep_going == "":
             # remove chosen letter from list
             if chosen in letters_needed:
                 letters_needed.remove(chosen)
-        statement_gen("Game Summary", "!")
-        print("You won, taking {} tries!".format(tries))
-        if price != 0:
-            price_total = price * tries
-            print("The total money spent was ${:.2f}".format(price_total))
-        keep_going = input("Press <enter> to keep going or any key to quit: ")
+            
+            # append to game summary if won
+            if letters_needed == []:
+                round_statement = "Round {}: Spelt in {} rounds.".format(rounds_played, tries)
+                tries_total += tries
+                game_summary.append(round_statement)
+                game_start = True
+
+    print()
+    statement_gen("Game Summary", "!")
+    for item in game_summary:
+        print(item)
+    if price != 0:
+        price_total = price * tries_total
+        average = price_total / rounds
+        print()
+        print("The total money spent was ${:.2f}".format(price_total))
+        print("The average money spent per win was ${:.2f}.".format(average))
+    keep_going = input("Press <enter> to run this program again or any key to quit: ")
